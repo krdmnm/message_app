@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:message_app/ui/cubits/main_page_cubit.dart';
 import 'package:message_app/ui/materials/colors.dart';
 import 'package:message_app/ui/views/add_person.dart';
 import 'package:message_app/ui/views/message.dart';
 import '../../data/entity/person.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 // son gelen mesajlar ve kişileer burada listelenecek
 
 
@@ -26,33 +28,26 @@ class _MainPageState extends State<MainPage> {
     print("Delete: $personId");
   }
 
-  Future<List<Person>> getPersons() async {
-    //burası veritabanından liste döndürecek - önce user nesnesinden ekli olan kişi listesini alalım
-    var persons = <Person>[];
-    var p1 = Person(person_id: 1, person_name: "Ahmet", person_phone: "5555555555");
-    var p2 = Person(person_id: 2, person_name: "Mehmet", person_phone: "5555555556");
-    var p3 = Person(person_id: 3, person_name: "Ali", person_phone: "5555555557");
-    var p4 = Person(person_id: 4, person_name: "Veli", person_phone: "5555555558");
-    var p5 = Person(person_id: 5, person_name: "Can", person_phone: "5555555559");
-    persons.add(p1);
-    persons.add(p2);
-    persons.add(p3);
-    persons.add(p4);
-    persons.add(p5);
-    return persons;
+  @override
+  void initState() {
+    super.initState();
+    context.read<MainPageCubit>().getPersons();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(backgroundColor: darkPrimaryColor,
-        title: isSearchActive ? TextField(style: TextStyle(color: primaryText) ,decoration: const InputDecoration(hintText: "Search",), onChanged: (keyWord){search(keyWord);},)
+        title: isSearchActive ? TextField(style: TextStyle(color: primaryText) ,decoration: const InputDecoration(hintText: "Search",),
+          onChanged: (keyWord){
+          context.read<MainPageCubit>().searchPersons(keyWord);},)
           : Text("Messages", style: TextStyle(color: primaryText),),
 
         actions: [isSearchActive ?
         IconButton(onPressed: (){
           setState(() {
             isSearchActive = false;
+            context.read<MainPageCubit>().getPersons();
           });
         }, icon: Icon(Icons.clear))
 
@@ -66,15 +61,13 @@ class _MainPageState extends State<MainPage> {
       ],),
 
       body: Container(color: white,
-        child: FutureBuilder<List<Person>>(
-            future: getPersons(),
-            builder: (context, snapshot){
-              if(snapshot.hasData){
-                var personList = snapshot.data; //burada snapshottaki listeyi aldık
+        child: BlocBuilder<MainPageCubit, List<Person>>(
+            builder: (context, personsList){
+              if(personsList.isNotEmpty){
                 return ListView.builder(
-                  itemCount: personList!.length,
+                  itemCount: personsList.length,
                   itemBuilder: (context, index){
-                    var person = personList[index];
+                    var person = personsList[index];
                     return GestureDetector(
                       onTap: (){
                         print("Person: ${person.person_name} - ${person.person_phone}");
@@ -116,7 +109,9 @@ class _MainPageState extends State<MainPage> {
 
       //Floating Action Button
       floatingActionButton: FloatingActionButton(backgroundColor: primaryColor, onPressed: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const AddPerson())).then((value)=>{print("to MainPage from AddPerson")});
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const AddPerson())).then((value)=>{
+          context.read<MainPageCubit>().getPersons()
+        });
       }, child: Icon(color: primaryText, Icons.person_add_alt_1_outlined)),
 
 

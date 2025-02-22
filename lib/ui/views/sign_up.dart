@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:message_app/ui/cubits/sign_up_cubit.dart';
 import 'package:message_app/ui/materials/colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -59,7 +61,7 @@ class _SignUpState extends State<SignUp> {
               SizedBox(height:5),
 
               ElevatedButton(style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(primaryColor),), onPressed: (){
-                signUp();
+                context.read<SignUpCubit>().signUp(tfUserPhone.text, tfUserName.text, tfUserPassword.text);
               }, child: Text("SIGN UP", style: TextStyle(color: primaryText),),),
 
             ],

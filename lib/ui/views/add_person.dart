@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:message_app/ui/cubits/add_person_cubit.dart';
 import 'package:message_app/ui/materials/colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddPerson extends StatefulWidget {
   const AddPerson({super.key});
@@ -11,18 +13,17 @@ class AddPerson extends StatefulWidget {
 class _AddPersonState extends State<AddPerson> {
   var tfPersonPhone = TextEditingController();
   var tfPersonName = TextEditingController();
-  String person_info = "";
+  String? personInfo;
 
 
-  Future<void> search() async {
+  void setPersonInfo() {
     if(tfPersonPhone.text.isNotEmpty){
-      person_info = tfPersonPhone.text;
+      personInfo = tfPersonPhone.text;
     }else if (tfPersonName.text.isNotEmpty){
-      person_info = tfPersonName.text;
+      personInfo = tfPersonName.text;
     }else{
       //Snackbar ekle
     }
-    print(person_info);
   }
 
   @override
@@ -50,8 +51,8 @@ class _AddPersonState extends State<AddPerson> {
 
               ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: primaryColor, foregroundColor: white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),),
                 onPressed: (){
-              print("Name: $tfPersonPhone - $tfPersonName");
-              search();
+              setPersonInfo();
+              context.read<AddPersonCubit>().search(personInfo);
             }, child: Text("SEARCH", style: TextStyle(color: white),),),
 
 

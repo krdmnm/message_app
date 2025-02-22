@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:message_app/ui/cubits/log_in_cubit.dart';
 import 'package:message_app/ui/materials/colors.dart';
 import 'package:message_app/ui/views/sign_up.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({super.key});
@@ -14,15 +16,6 @@ class _LogInState extends State<LogIn> {
   var tfUserPassword = TextEditingController();
   bool isObscured = true;
 
-
-  Future<void> logIn() async {
-    if(tfUserPhone.text.isNotEmpty && tfUserPassword.text.isNotEmpty){
-      //veritabanından kişiyi bul - önce tel ve password temizle
-      print("Phone: ${tfUserPhone.text} - Password: ${tfUserPassword.text}");
-    }else{
-      //Snackbar ekle
-    }
-  }
 
 
   @override
@@ -55,8 +48,7 @@ class _LogInState extends State<LogIn> {
 
                     ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: primaryColor, foregroundColor: white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7))),
                       onPressed: (){
-                      print("Phone: ${tfUserPhone.text} - Password: ${tfUserPassword.text}");
-                      logIn();
+                      context.read<LoginCubit>().logIn(tfUserPhone.text, tfUserPassword.text);
                     }, child: Text("LOG IN", style: TextStyle(color: white),), ),
 
                     Text("OR", style: TextStyle(fontSize: 16, color:Colors.black54, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),),
