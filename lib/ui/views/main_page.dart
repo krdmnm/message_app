@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:message_app/data/entity/app_user.dart';
 import 'package:message_app/ui/cubits/main_page_cubit.dart';
 import 'package:message_app/ui/materials/colors.dart';
 import 'package:message_app/ui/views/add_person.dart';
@@ -10,7 +11,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  AppUser user;
+  MainPage({required this.user});
+  //const MainPage({super.key});
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -41,7 +44,7 @@ class _MainPageState extends State<MainPage> {
         title: isSearchActive ? TextField(style: TextStyle(color: primaryText) ,decoration: const InputDecoration(hintText: "Search",),
           onChanged: (keyWord){
           context.read<MainPageCubit>().searchPersons(keyWord);},)
-          : Text("Messages", style: TextStyle(color: primaryText),),
+          : Text("Messages of ${widget.user.user_name}", style: TextStyle(color: primaryText),),
 
         actions: [isSearchActive ?
         IconButton(onPressed: (){

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:message_app/data/repository/dao.dart';
 
@@ -6,8 +7,8 @@ class LoginCubit extends Cubit<void>{
 
   var dao = Dao();
 
-  Future<void> logIn(String phone, String password) async {
-    await dao.logIn(phone, password);
+  Future<void> logIn(String email, String password, BuildContext context) async {
+    await dao.logIn(email, password, context);
   }
 
 

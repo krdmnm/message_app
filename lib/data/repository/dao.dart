@@ -1,15 +1,25 @@
+import 'package:flutter/material.dart';
+import 'package:message_app/data/database/sb_database.dart';
+import 'package:message_app/data/entity/app_user.dart';
+import 'package:message_app/ui/views/main_page.dart';
+import 'package:message_app/ui/views/message.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 import '../entity/person.dart';
 
 class Dao {
 
 
-  //login.dart
-  Future<void> logIn(String phone, String password) async {
-    if(phone.isNotEmpty && password.isNotEmpty){
-      //veritabanından kişiyi bul - önce tel ve password temizle
-      print("Phone: ${phone} - Password: ${password}");
-    }else{
-      //Snackbar ekle
+  //login.dart - log in button
+  Future<void> logIn(String email, String password, BuildContext context) async {
+    if(email.isNotEmpty && password.isNotEmpty){
+      final db = Database();
+      AppUser user = await db.logIn(email, password);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>MainPage(user: user,)));
+      //messages sayfasına yönlendir
+    } else {
+      print("TextField is empty - Login unseccessfull");
+      //showAlertDialog(, "Warning", "Please fill all fields");
     }
   }
 
@@ -49,4 +59,17 @@ class Dao {
     return persons;
 }
 
+}
+
+void showAlertDialog(BuildContext context, String title, String content){
+  showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: [TextButton(onPressed: (){
+            Navigator.of(context).pop();
+          }, child: Text("OK"),)],);
+      });
 }

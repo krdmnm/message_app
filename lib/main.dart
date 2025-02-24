@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:message_app/data/database/sb_database.dart';
 import 'package:message_app/ui/cubits/add_person_cubit.dart';
 import 'package:message_app/ui/cubits/log_in_cubit.dart';
 import 'package:message_app/ui/cubits/main_page_cubit.dart';
@@ -10,7 +11,10 @@ import 'package:message_app/ui/views/search_result.dart';
 import 'package:message_app/ui/views/sign_up.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final db = Database();
+  await db.initialize();
   runApp(const MyApp());
 }
 
@@ -35,7 +39,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const MainPage(),
+        home: const LogIn(),
       ),
     );
   }

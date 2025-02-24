@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../data/entity/app_user.dart';
 import '../../data/entity/person.dart';
 
 class Message extends StatefulWidget {
@@ -14,7 +15,7 @@ class _MessageState extends State<Message> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("${widget.person.person_name} - ${widget.person.person_phone}"),),
+      appBar: AppBar(title: Text("${widget.person.person_name}"),),
       body: const Center(),
     );
   }
