@@ -3,8 +3,10 @@ import 'package:message_app/data/database/sb_database.dart';
 import 'package:message_app/data/entity/app_user.dart';
 import 'package:message_app/ui/views/main_page.dart';
 import 'package:message_app/ui/views/message.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../ui/views/log_in.dart';
 import '../entity/person.dart';
 
 class Dao {
@@ -23,14 +25,29 @@ class Dao {
     }
   }
 
-  //sig_up.dart
-  Future<void> signUp(String phone, String name, String password) async {
-    if(phone.isNotEmpty && name.isNotEmpty && password.isNotEmpty){
-      //veritabanına kaydet - önce verileri temizle
-      print("Phone: $phone - Name: $name - Password: $password");
+  //main_page.cubit - logOut()
+  Future<void> logOut() async {
+    final db = Database();
+    await db.logOut();
+    final sp = await SharedPreferences.getInstance();
+    sp.remove("email");
+    sp.remove("password");
+    sp.clear();
+  }
+
+  //sign_up.dart
+  Future<void> signUp(BuildContext context, String email, String name, String password) async {
+    if(email.isNotEmpty && name.isNotEmpty && password.isNotEmpty){
+      final db = Database();
+      var user = await db.signUp(email, password, name);
+      if(user != null){
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Sign up successful"), duration: Duration(seconds: 1)));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>LogIn()));
+      } else {
+        showAlertDialog(context, "Warning", "Could not sign up try again later");
+      }
     }else{
-      //Snackbar ekle
-      print("TextField is empty");
+      showAlertDialog(context, "Warning", "Fill all fields");
     }
   }
 

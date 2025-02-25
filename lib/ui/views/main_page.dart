@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:message_app/data/database/sb_database.dart';
 import 'package:message_app/data/entity/app_user.dart';
 import 'package:message_app/ui/cubits/main_page_cubit.dart';
 import 'package:message_app/ui/materials/colors.dart';
+import 'package:message_app/ui/materials/views.dart';
 import 'package:message_app/ui/views/add_person.dart';
 import 'package:message_app/ui/views/message.dart';
 import '../../data/entity/person.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'log_in.dart';
 // son gelen mesajlar ve kişileer burada listelenecek
 
 
@@ -60,7 +64,11 @@ class _MainPageState extends State<MainPage> {
           setState(() {
             isSearchActive = true;
           });
-        }, icon: Icon(Icons.search))
+        }, icon: Icon(Icons.search)),
+          Views(logOut: () {
+            context.read<MainPageCubit>().logOut();
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LogIn()));
+          },),
       ],),
 
       body: Container(color: white,

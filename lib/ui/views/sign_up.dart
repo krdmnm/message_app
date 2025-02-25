@@ -11,16 +11,16 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  var tfUserPhone = TextEditingController();
+  var tfUserEmail = TextEditingController();
   var tfUserName = TextEditingController();
   var tfUserPassword = TextEditingController();
   bool isObscured = true;
 
 
   Future<void> signUp() async {
-    if(tfUserPhone.text.isNotEmpty && tfUserName.text.isNotEmpty && tfUserPassword.text.isNotEmpty){
+    if(tfUserEmail.text.isNotEmpty && tfUserName.text.isNotEmpty && tfUserPassword.text.isNotEmpty){
       //veritabanına kaydet - önce verileri temizle
-      print("Phone: ${tfUserPhone.text} - Name: ${tfUserName.text} - Password: ${tfUserPassword.text}");
+      print("Phone: ${tfUserEmail.text} - Name: ${tfUserName.text} - Password: ${tfUserPassword.text}");
     }else{
       //Snackbar ekle
       print("TextField is empty");
@@ -38,8 +38,8 @@ class _SignUpState extends State<SignUp> {
           child: Column(mainAxisAlignment: MainAxisAlignment.start,
             children: [
 
-              TextField(controller: tfUserPhone,
-                decoration: InputDecoration(hintText: "Your unique phone number", border: OutlineInputBorder(),),),
+              TextField(controller: tfUserEmail,
+                decoration: InputDecoration(hintText: "Your unique email", border: OutlineInputBorder(),),),
 
               SizedBox(height:5),
 
@@ -61,7 +61,7 @@ class _SignUpState extends State<SignUp> {
               SizedBox(height:5),
 
               ElevatedButton(style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(primaryColor),), onPressed: (){
-                context.read<SignUpCubit>().signUp(tfUserPhone.text, tfUserName.text, tfUserPassword.text);
+                context.read<SignUpCubit>().signUp(context, tfUserEmail.text, tfUserName.text, tfUserPassword.text);
               }, child: Text("SIGN UP", style: TextStyle(color: primaryText),),),
 
             ],

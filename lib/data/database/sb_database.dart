@@ -28,15 +28,31 @@ class Database {
       final user = AppUser(user_id: response.user!.id,
           user_name: response.user!.userMetadata!['display_name'],
           user_email: response.user!.email!);
-      final sp = await SharedPreferences.getInstance();
-      await sp.setString("email", response.user!.email!);
-      await sp.setString("password", password);
+      //final sp = await SharedPreferences.getInstance();
+      //await sp.setString("email", response.user!.email!);
+      //await sp.setString("password", password);
       print("User logged in ${user.user_name} - ${user.user_email} - ${user.user_id}");
       return user;
     } else {
       return AppUser(user_id: "", user_name: "", user_email: "");
     }
 
+  }
+
+  //views.dart
+  Future<void> logOut() async {
+    final supabase = await getInstance();
+    await supabase.auth.signOut();
+    print("User logged out");
+  }
+
+  //dao.dart - signUp()
+  Future<User?> signUp(String email, String password, String name) async {
+    final supabase = await getInstance();
+    final response = await supabase.auth.signUp(email: email,
+        password: password,
+    data: {'display_name' : name});
+    return response.user;
   }
 
 

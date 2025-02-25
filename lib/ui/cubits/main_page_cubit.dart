@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:message_app/data/entity/person.dart';
 import 'package:message_app/data/repository/dao.dart';
@@ -15,6 +16,10 @@ class MainPageCubit extends Cubit<List<Person>>{
   Future<void> searchPersons(String keyWord) async {
     var persons = await dao.searchPersons(keyWord);
     emit(persons);
+  }
+
+  Future<void> logOut() async {
+    dao.logOut();
   }
 
 
