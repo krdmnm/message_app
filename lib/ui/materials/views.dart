@@ -4,7 +4,7 @@ import 'package:message_app/ui/views/log_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Views extends StatelessWidget {
-  final Function() logOut;
+  final Function(BuildContext context) logOut;
   const Views({super.key, required this.logOut});
 
 
@@ -13,7 +13,7 @@ class Views extends StatelessWidget {
     return PopupMenuButton<String>(
       onSelected: (String value){
         if(value == "logout"){
-          logOut();
+          logOut(context);
           print(value);
         }
         if(value == "profile"){

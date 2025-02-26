@@ -31,7 +31,7 @@ class _MainPageState extends State<MainPage> {
     print("Search: $keyWord");
   }
 
-  Future<void> deletePerson(int personId) async {
+  Future<void> deletePerson(String personId) async {
     print("Delete: $personId");
   }
 
@@ -65,9 +65,9 @@ class _MainPageState extends State<MainPage> {
             isSearchActive = true;
           });
         }, icon: Icon(Icons.search)),
-          Views(logOut: () {
-            context.read<MainPageCubit>().logOut();
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LogIn()));
+          Views(logOut: (context) {
+            context.read<MainPageCubit>().logOut(context);
+            //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LogIn()));
           },),
       ],),
 
@@ -81,7 +81,7 @@ class _MainPageState extends State<MainPage> {
                     var person = personsList[index];
                     return GestureDetector(
                       onTap: (){
-                        print("Person: ${person.person_name} - ${person.person_phone}");
+                        print("Person: ${person.person_name} - ${person.person_email}");
                         Navigator.push(context, MaterialPageRoute(builder: (context)=> Message(person: person)));
                       },
                       child: Card(color: lightPrimaryColor,//Person message elementi
@@ -94,7 +94,7 @@ class _MainPageState extends State<MainPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(person.person_name, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: primaryText),),
-                                    Text(person.person_phone, style: TextStyle(fontSize: 10, fontStyle: FontStyle.italic,),),
+                                    Text(person.person_email, style: TextStyle(fontSize: 10, fontStyle: FontStyle.italic,),),
                                   ],
                                 ),
                               ),

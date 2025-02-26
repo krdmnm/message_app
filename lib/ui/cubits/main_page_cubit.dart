@@ -18,8 +18,8 @@ class MainPageCubit extends Cubit<List<Person>>{
     emit(persons);
   }
 
-  Future<void> logOut() async {
-    dao.logOut();
+  Future<void> logOut(BuildContext context) async {
+    dao.logOut(context);
   }
 
 

@@ -17,6 +17,9 @@ class Dao {
     if(email.isNotEmpty && password.isNotEmpty){
       final db = Database();
       AppUser user = await db.logIn(email, password);
+      final sp = await SharedPreferences.getInstance();
+      await sp.setString("email", user.user_email);
+      await sp.setString("password", password);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>MainPage(user: user,)));
       //messages sayfasına yönlendir
     } else {
@@ -26,13 +29,14 @@ class Dao {
   }
 
   //main_page.cubit - logOut()
-  Future<void> logOut() async {
+  Future<void> logOut(BuildContext context) async {
     final db = Database();
     await db.logOut();
     final sp = await SharedPreferences.getInstance();
     sp.remove("email");
     sp.remove("password");
     sp.clear();
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LogIn()));
   }
 
   //sign_up.dart
@@ -53,21 +57,26 @@ class Dao {
 
   //main_page.dart - kayıtlı kişilerden aramak için
   Future<List<Person>> searchPersons(String keyWord) async {
-    var persons = <Person>[];
-    var person = Person(person_id: 1, person_name: "Ahmet", person_phone: "5555555555");
-    persons.add(person);
-    return persons;
+    if(keyWord.isNotEmpty){
+      final db = Database();
+      return await db.searchPersons(keyWord);
+    } else {
+      var persons = <Person>[];
+      var person = Person(person_id: "1", person_name: "Ahmet", person_email: "5555555555");
+      persons.add(person);
+      return persons;
+    }
   }
 
 
   //main_page.dart
   Future<List<Person>> getPersons() async {
     var persons = <Person>[];
-    var p1 = Person(person_id: 1, person_name: "Ahmet", person_phone: "5555555555");
-    var p2 = Person(person_id: 2, person_name: "Mehmet", person_phone: "5555555556");
-    var p3 = Person(person_id: 3, person_name: "Ali", person_phone: "5555555557");
-    var p4 = Person(person_id: 4, person_name: "Veli", person_phone: "5555555558");
-    var p5 = Person(person_id: 5, person_name: "Can", person_phone: "5555555559");
+    var p1 = Person(person_id: "1", person_name: "Ahmet", person_email: "5555555555");
+    var p2 = Person(person_id: "2", person_name: "Mehmet", person_email: "5555555556");
+    var p3 = Person(person_id: "3", person_name: "Ali", person_email: "5555555557");
+    var p4 = Person(person_id: "4", person_name: "Veli", person_email: "5555555558");
+    var p5 = Person(person_id: "5", person_name: "Can", person_email: "5555555559");
     persons.add(p1);
     persons.add(p2);
     persons.add(p3);

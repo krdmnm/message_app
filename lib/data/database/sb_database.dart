@@ -1,4 +1,5 @@
 import 'package:message_app/data/entity/app_user.dart';
+import 'package:message_app/data/entity/person.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -28,9 +29,6 @@ class Database {
       final user = AppUser(user_id: response.user!.id,
           user_name: response.user!.userMetadata!['display_name'],
           user_email: response.user!.email!);
-      //final sp = await SharedPreferences.getInstance();
-      //await sp.setString("email", response.user!.email!);
-      //await sp.setString("password", password);
       print("User logged in ${user.user_name} - ${user.user_email} - ${user.user_id}");
       return user;
     } else {
@@ -52,7 +50,34 @@ class Database {
     final response = await supabase.auth.signUp(email: email,
         password: password,
     data: {'display_name' : name});
+    //create table
+    final userId = response.user!.id;
+    try{
+      final tableName = "$userId";
+      await supabase.rpc('create_table_if_not_exists', params: {'table_name': tableName});
+      print("Table Created");
+    } catch (e){
+      print("Error creating table - $e");
+    }
     return response.user;
+  }
+
+  Future<List<Person>> searchPersons(String keyword) async {
+    final supabase = await getInstance();
+    final currentUser = await supabase.auth.currentUser;
+    final response = await supabase.from(currentUser!.id).select().ilike("person_name", keyword);
+    print("Search response: $response");
+    return response;
+    //return List.generate(response.length, (index){
+    //  var person = response[index];
+    //  return Person(person_id: person['person_id'], person_name: person['person_name'], person_email: person['person_email']);
+    //});
+
+    //print("Current User: ${currentUser.id}");
+    //final person = Person(person_id: "1", person_name: currentUser.userMetadata!['display_name']!, person_email: currentUser.email!);
+    //var persons = <Person>[];
+    //persons.add(person);
+    //return persons;
   }
 
 
