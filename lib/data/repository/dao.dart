@@ -59,31 +59,41 @@ class Dao {
   Future<List<Person>> searchPersons(String keyWord) async {
     if(keyWord.isNotEmpty){
       final db = Database();
-      return await db.searchPersons(keyWord);
-    } else {
+      var response = await db.searchPersons(keyWord);
+      print("dao searchPersons : $response");
       var persons = <Person>[];
-      var person = Person(person_id: "1", person_name: "Ahmet", person_email: "5555555555");
-      persons.add(person);
+      for(var person in response){
+        var p = Person(person_id: person['person_id'], person_name: person['person_name'], person_email: person['person_email']);
+        persons.add(p);
+      }
       return persons;
+    } else {
+      return <Person>[];
     }
+  }
+
+  //add_person_cubit searchUser
+  Future<void> searchUser(String keyWord) async {
+    final db = Database();
+    db.searchUser(keyWord);
+  }
+
+  //add_person_cubit addUser
+  Future<void> addUser(String userId) async {
+
   }
 
 
   //main_page.dart
   Future<List<Person>> getPersons() async {
-    var persons = <Person>[];
-    var p1 = Person(person_id: "1", person_name: "Ahmet", person_email: "5555555555");
-    var p2 = Person(person_id: "2", person_name: "Mehmet", person_email: "5555555556");
-    var p3 = Person(person_id: "3", person_name: "Ali", person_email: "5555555557");
-    var p4 = Person(person_id: "4", person_name: "Veli", person_email: "5555555558");
-    var p5 = Person(person_id: "5", person_name: "Can", person_email: "5555555559");
-    persons.add(p1);
-    persons.add(p2);
-    persons.add(p3);
-    persons.add(p4);
-    persons.add(p5);
-    return persons;
-}
+    final db = Database();
+    return await db.getPersons();
+  }
+
+  Future<void> deletePerson(String id) async {
+    final db = Database();
+    db.deletePerson(id);
+  }
 
 }
 

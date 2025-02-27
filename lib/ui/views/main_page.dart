@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:message_app/data/database/sb_database.dart';
 import 'package:message_app/data/entity/app_user.dart';
 import 'package:message_app/ui/cubits/main_page_cubit.dart';
 import 'package:message_app/ui/materials/colors.dart';
@@ -9,8 +8,6 @@ import 'package:message_app/ui/views/message.dart';
 import '../../data/entity/person.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'log_in.dart';
-// son gelen mesajlar ve kişileer burada listelenecek
 
 
 
@@ -47,7 +44,8 @@ class _MainPageState extends State<MainPage> {
       appBar: AppBar(backgroundColor: darkPrimaryColor,
         title: isSearchActive ? TextField(style: TextStyle(color: primaryText) ,decoration: const InputDecoration(hintText: "Search",),
           onChanged: (keyWord){
-          context.read<MainPageCubit>().searchPersons(keyWord);},)
+            context.read<MainPageCubit>().searchPersons(keyWord);
+          },)
           : Text("Messages of ${widget.user.user_name}", style: TextStyle(color: primaryText),),
 
         actions: [isSearchActive ?
@@ -102,7 +100,10 @@ class _MainPageState extends State<MainPage> {
                               IconButton(onPressed: (){
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text("${person.person_name} will be deleted Are you sure?"),
-                                    action: SnackBarAction(label: "Yes", onPressed: (){ deletePerson(person.person_id); }),)
+                                    action: SnackBarAction(label: "Yes", onPressed: (){ context.read<MainPageCubit>().deletePerson(person.person_id);
+                                    setState(() {
+                                      context.read<MainPageCubit>().getPersons();
+                                    });}),)
                                 );
                               }, icon: const Icon(Icons.clear), color: Colors.black54,)
                             ],

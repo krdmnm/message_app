@@ -62,22 +62,38 @@ class Database {
     return response.user;
   }
 
-  Future<List<Person>> searchPersons(String keyword) async {
+  //dao.dart - searchPersons()
+  Future<List<Map<String, dynamic>>> searchPersons(String keyword) async {
     final supabase = await getInstance();
     final currentUser = await supabase.auth.currentUser;
     final response = await supabase.from(currentUser!.id).select().ilike("person_name", keyword);
-    print("Search response: $response");
     return response;
-    //return List.generate(response.length, (index){
-    //  var person = response[index];
-    //  return Person(person_id: person['person_id'], person_name: person['person_name'], person_email: person['person_email']);
-    //});
+  }
 
-    //print("Current User: ${currentUser.id}");
-    //final person = Person(person_id: "1", person_name: currentUser.userMetadata!['display_name']!, person_email: currentUser.email!);
-    //var persons = <Person>[];
-    //persons.add(person);
-    //return persons;
+  Future<List<Person>> getPersons() async {
+    final supabase = await getInstance();
+    final currentUser = await supabase.auth.currentUser;
+    final response = await supabase.from(currentUser!.id).select();
+    print("database getPersons : $response");
+    if(response.isNotEmpty){
+      return List.generate(response.length, (index){
+        var person = response[index];
+        return Person(person_id: person['person_id'], person_name: person['person_name'], person_email: person['person_email']);
+      });
+    } else {
+      return <Person>[];
+    }
+  }
+
+  Future<void> deletePerson(String id) async {
+    final supabase = await getInstance();
+    final currentUser = await supabase.auth.currentUser;
+    await supabase.from(currentUser!.id).delete().eq('person_id', id);
+  }
+
+  //dao.dart - searchUser()
+  Future<void> searchUser(String keyWord) async {
+
   }
 
 

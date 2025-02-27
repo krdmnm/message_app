@@ -15,7 +15,12 @@ class MainPageCubit extends Cubit<List<Person>>{
 
   Future<void> searchPersons(String keyWord) async {
     var persons = await dao.searchPersons(keyWord);
+    print("main cubit searchPersons : $persons");
     emit(persons);
+  }
+
+  Future<void> deletePerson(String id) async {
+    dao.deletePerson(id);
   }
 
   Future<void> logOut(BuildContext context) async {
