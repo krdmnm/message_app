@@ -3,6 +3,7 @@ import 'package:message_app/data/database/sb_database.dart';
 import 'package:message_app/ui/cubits/add_person_cubit.dart';
 import 'package:message_app/ui/cubits/log_in_cubit.dart';
 import 'package:message_app/ui/cubits/main_page_cubit.dart';
+import 'package:message_app/ui/cubits/message_cubit.dart';
 import 'package:message_app/ui/cubits/sign_up_cubit.dart';
 import 'package:message_app/ui/views/add_person.dart';
 import 'package:message_app/ui/views/log_in.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => SignUpCubit()),
         BlocProvider(create: (context) => AddPersonCubit()),
         BlocProvider(create: (context) => MainPageCubit()),
+        BlocProvider(create: (context) => MessageCubit()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

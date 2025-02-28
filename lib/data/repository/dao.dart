@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:message_app/data/database/sb_database.dart';
 import 'package:message_app/data/entity/app_user.dart';
+import 'package:message_app/data/entity/messages.dart';
 import 'package:message_app/ui/views/main_page.dart';
 import 'package:message_app/ui/views/message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -93,6 +94,16 @@ class Dao {
   Future<void> deletePerson(String id) async {
     final db = Database();
     db.deletePerson(id);
+  }
+
+  Future<List<Messages>> getMessages(String personId) async {
+    final db = Database();
+    final messages =  await db.getMessages(personId);
+    return messages;
+  }
+
+  Future<void> sendMessage() async {
+
   }
 
 }

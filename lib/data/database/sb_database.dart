@@ -1,4 +1,5 @@
 import 'package:message_app/data/entity/app_user.dart';
+import 'package:message_app/data/entity/messages.dart';
 import 'package:message_app/data/entity/person.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -91,9 +92,25 @@ class Database {
     await supabase.from(currentUser!.id).delete().eq('person_id', id);
   }
 
+
   //dao.dart - searchUser()
   Future<void> searchUser(String keyWord) async {
 
+  }
+
+  //dao.dart - getMessages()
+  Future<List<Messages>> getMessages(String personId) async {
+    final supabase = await getInstance();
+    final currentUser = await supabase.auth.currentUser;
+    final response = await supabase.from('messages').select()
+        .or('reciever_id.eq.$personId,sender_id.eq.${currentUser!.id}').or('reciever_id.eq.${currentUser.id},sender_id.eq.$personId');
+    print("database getMessages : $response");
+    return List.generate(response.length, (index){
+      var message = response[index];
+      return Messages(id: message['id'], sender_id: message['sender_id'], reciever_id: message['reciever_id'],
+          content: message['content'], date: message['created_at'], time: message['created_at'],
+          status: message['status']);
+    });
   }
 
 
