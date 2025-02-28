@@ -27,6 +27,10 @@ class MainPageCubit extends Cubit<List<Person>>{
     dao.logOut(context);
   }
 
+  Future<void> trackOnlineStatus() async {
+    dao.trackOnlineStatus();
+  }
+
 
 
 }

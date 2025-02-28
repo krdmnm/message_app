@@ -19,6 +19,22 @@ class MessageCubit extends Cubit<List<Messages>>{
         .onPostgresChanges(event: PostgresChangeEvent.insert, schema: 'public', table: 'messages', callback: handleInserts).subscribe();
   }
 
+  Future<void> trackOnlineStatus(String personId) async {
+    final supabase = Supabase.instance.client;
+    final presence = supabase.channel('presence');
+    presence.onPresenceSync((payload) {
+      final onlineUsers = presence.presenceState();
+      onlineUsers.forEach((presenceState) {
+        presenceState.presences.forEach((presence) {
+          final userId = presence.payload['user_id'];
+          final status = presence.payload['status'];
+          print('Kullanıcı ID: $userId, Durum: $status');
+        });
+      });
+    }).subscribe();
+
+  }
+
   void handleInserts(PostgresChangePayload payload) async {
     final parsedDate = DateTime.parse(payload.newRecord['created_at']);
     final newMessage = Messages(id: payload.newRecord['id'],
@@ -39,6 +55,8 @@ class MessageCubit extends Cubit<List<Messages>>{
   Future<void> sendMessage(String messageContent, String personId) async {
     dao.sendMessage(messageContent, personId);
   }
+
+
 
 }
 

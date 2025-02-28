@@ -1,0 +1,1 @@
+ D:\\Android\\Android\ Studio\ Projects\\Flutter\\message_app\\.dart_tool\\flutter_build\\381bf30f29bcb766818b1be121583922\\native_assets.yaml: 

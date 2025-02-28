@@ -5,6 +5,7 @@ import 'package:message_app/ui/materials/colors.dart';
 import 'package:message_app/ui/materials/views.dart';
 import 'package:message_app/ui/views/add_person.dart';
 import 'package:message_app/ui/views/message.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../data/entity/person.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,9 +24,19 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   bool isSearchActive = false;
 
-  Future<void> search(String keyWord) async {
-    //burası appBardaki arama ikonuna tıklandığında çalışacak bir liste dönecek ve bu liste main_page de gösterilecek
-    print("Search: $keyWord");
+  Future<void> trackOnlineStatus() async {
+    final supabase = Supabase.instance.client;
+    final currentUser = supabase.auth.currentUser;
+    final presence = supabase.channel('presence');
+    presence.onPresenceSync((payload){
+      final onlineUsers = presence.presenceState();
+      print("Online Users MainPage: $onlineUsers");
+    }).subscribe();
+    
+    presence.track({
+      'user_id': currentUser!.id,
+      'status': 'online',
+    });
   }
 
   Future<void> deletePerson(String personId) async {
@@ -36,6 +47,7 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     context.read<MainPageCubit>().getPersons();
+    trackOnlineStatus();
   }
 
   @override

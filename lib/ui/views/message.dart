@@ -20,11 +20,13 @@ class Message extends StatefulWidget {
 
 class _MessageState extends State<Message> {
   AppUser? currentUser = null;
+  String status = "offline";
   var tfMessage = TextEditingController();
 
   @override
   void initState()  {
     super.initState();
+    context.read<MessageCubit>().trackOnlineStatus(widget.person.person_id);
     final supabase =  Supabase.instance.client;
     final _currentUser =  supabase.auth.currentUser;
     currentUser = AppUser(user_id: _currentUser!.id, user_name: _currentUser.userMetadata!['display_name'], user_email: _currentUser.email!);
@@ -33,10 +35,26 @@ class _MessageState extends State<Message> {
     context.read<MessageCubit>().getMessages(widget.person.person_id);
   }
 
+  Future<void> trackOnlineStatus() async {
+    final supabase = Supabase.instance.client;
+    final presence = supabase.channel('presence');
+    presence.onPresenceSync((payload){
+      var onlineUsers = presence.presenceState();
+      onlineUsers.forEach((onlineUser){
+        if(onlineUser.key == currentUser!.user_id){
+          setState(() {
+            status = 'online';
+          });
+        }
+      });
+    }).subscribe();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("${widget.person.person_name}"),),
+      appBar: AppBar(title: Text("${widget.person.person_name} - $status"),),
       body: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
