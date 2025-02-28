@@ -88,7 +88,7 @@ class _MessageState extends State<Message> {
                     final messageContent = tfMessage.text.trim();
                     if (messageContent.isNotEmpty) {
                       // Mesaj gönderme fonksiyonunuzu çağırın
-                      context.read<MessageCubit>().sendMessage(messageContent);
+                      context.read<MessageCubit>().sendMessage(messageContent, widget.person.person_id);
                       tfMessage.clear(); // Gönderdikten sonra textfieldi temizle
                     }
                   },

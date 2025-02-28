@@ -4,7 +4,6 @@ class Messages {
   String reciever_id;
   String content;
   DateTime date;
-  DateTime time;
   String status;
 
   Messages({required this.id,
@@ -12,7 +11,6 @@ class Messages {
     required this.reciever_id,
     required this.content,
     required this.date,
-    required this.time,
     required this.status});
 
 }

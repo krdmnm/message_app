@@ -12,7 +12,7 @@ class Database {
 
   Future<void> initialize() async {
     if(!isInitialized){
-      await Supabase.initialize(url: url, anonKey: anonkey);
+      await Supabase.initialize(url: url, anonKey: anonkey, realtimeClientOptions: const RealtimeClientOptions(eventsPerSecond: 2));
       isInitialized = true;
       print("Supabase initialized");
     }
@@ -100,17 +100,43 @@ class Database {
 
   //dao.dart - getMessages()
   Future<List<Messages>> getMessages(String personId) async {
+    var messageFrom = <Messages>[];
+    var messageTo = <Messages>[];
     final supabase = await getInstance();
     final currentUser = await supabase.auth.currentUser;
-    final response = await supabase.from('messages').select()
-        .or('reciever_id.eq.$personId,sender_id.eq.${currentUser!.id}').or('reciever_id.eq.${currentUser.id},sender_id.eq.$personId');
-    print("database getMessages : $response");
-    return List.generate(response.length, (index){
-      var message = response[index];
-      return Messages(id: message['id'], sender_id: message['sender_id'], reciever_id: message['reciever_id'],
-          content: message['content'], date: message['created_at'], time: message['created_at'],
-          status: message['status']);
-    });
+    try{
+      final responseFrom = await supabase.from('messages').select()
+          .or('and(sender_id.eq.$personId,reciever_id.eq.${currentUser!.id}),and(sender_id.eq.${currentUser.id},reciever_id.eq.$personId)');
+
+      print("database getMessages reponseFrom : $responseFrom");
+
+
+      messageFrom = List.generate(responseFrom.length, (index){
+        var message = responseFrom[index];
+        var parsedDate = DateTime.parse(message['created_at']);
+        return Messages(id: message['id'], sender_id: message['sender_id'], reciever_id: message['reciever_id'],
+            content: message['content'], date: parsedDate,
+            status: message['status']);
+      });
+
+      messageFrom.sort((a, b) => a.date!.compareTo(b.date!));
+      return messageFrom;
+
+    }catch(e){
+      print(e);
+      return <Messages>[];
+    }
+
+  }
+
+  Future<void> sendMessage(String messageContent, String personId) async {
+    final supabase = await getInstance();
+    final currentUser = await supabase.auth.currentUser;
+    final response = await supabase.from('messages').insert({
+      'sender_id': currentUser!.id,
+      'reciever_id': personId,
+      'content': messageContent,
+      'status': 'sent'});
   }
 
 

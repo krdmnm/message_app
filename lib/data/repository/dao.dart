@@ -102,8 +102,13 @@ class Dao {
     return messages;
   }
 
-  Future<void> sendMessage() async {
+  void handleInserts(payload)  {
+    print("handleInserts $payload");
+  }
 
+  Future<void> sendMessage(String messageContent, String personId) async {
+    final db = Database();
+    db.sendMessage(messageContent, personId);
   }
 
 }
