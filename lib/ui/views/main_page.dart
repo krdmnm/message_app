@@ -24,30 +24,28 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   bool isSearchActive = false;
 
-  Future<void> trackOnlineStatus() async {
-    final supabase = Supabase.instance.client;
-    final currentUser = supabase.auth.currentUser;
-    final presence = supabase.channel('presence');
-    presence.onPresenceSync((payload){
-      final onlineUsers = presence.presenceState();
-      print("Online Users MainPage: $onlineUsers");
-    }).subscribe();
-    
-    presence.track({
-      'user_id': currentUser!.id,
-      'status': 'online',
-    });
-  }
-
-  Future<void> deletePerson(String personId) async {
-    print("Delete: $personId");
-  }
 
   @override
   void initState() {
     super.initState();
     context.read<MainPageCubit>().getPersons();
-    trackOnlineStatus();
+    goOnlineStatus();
+  }
+
+  Future<void> goOnlineStatus() async {
+    final supabase = Supabase.instance.client;
+    final currentUser = supabase.auth.currentUser;
+    final presenceChannel = supabase.channel('presence');
+    presenceChannel.onPresenceSync((_) {
+      final newState = presenceChannel.presenceState();
+    }).onPresenceJoin((payload) {
+      final onlineUsers = presenceChannel.presenceState();
+      print('onPresenceJoin: $onlineUsers');
+    }).onPresenceLeave((payload) {
+      final onlineUsers = presenceChannel.presenceState();
+      print('onPresenceLeave: $onlineUsers');
+    }).subscribe();
+    presenceChannel.track({'user_id': '$currentUser', 'status': 'online'});
   }
 
   @override

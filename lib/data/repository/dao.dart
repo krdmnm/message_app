@@ -111,20 +111,6 @@ class Dao {
     db.sendMessage(messageContent, personId);
   }
 
-  Future<void> trackOnlineStatus() async {
-    final supabase = Supabase.instance.client;
-    final currentUser = supabase.auth.currentUser;
-    final presence = supabase.channel('presence');
-    presence.onPresenceSync((payload){
-      final onlineUsers = presence.presenceState();
-      print("Online Users Dao: $onlineUsers");
-    }).subscribe();
-
-    presence.track({
-      'user_id': currentUser!.id,
-      'status': 'online',
-    });
-  }
 
 }
 

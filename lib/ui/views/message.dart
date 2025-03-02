@@ -26,7 +26,7 @@ class _MessageState extends State<Message> {
   @override
   void initState()  {
     super.initState();
-    context.read<MessageCubit>().trackOnlineStatus(widget.person.person_id);
+    trackOnlineStatus();
     final supabase =  Supabase.instance.client;
     final _currentUser =  supabase.auth.currentUser;
     currentUser = AppUser(user_id: _currentUser!.id, user_name: _currentUser.userMetadata!['display_name'], user_email: _currentUser.email!);
@@ -37,16 +37,10 @@ class _MessageState extends State<Message> {
 
   Future<void> trackOnlineStatus() async {
     final supabase = Supabase.instance.client;
-    final presence = supabase.channel('presence');
-    presence.onPresenceSync((payload){
-      var onlineUsers = presence.presenceState();
-      onlineUsers.forEach((onlineUser){
-        if(onlineUser.key == currentUser!.user_id){
-          setState(() {
-            status = 'online';
-          });
-        }
-      });
+    final trackChannel = supabase.channel('presence');
+    trackChannel.onPresenceSync((payload){
+      final a = trackChannel.presenceState();
+      //ÖNEMLİ!! a boş dönüyor.
     }).subscribe();
   }
 
@@ -54,7 +48,7 @@ class _MessageState extends State<Message> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("${widget.person.person_name} - $status"),),
+        appBar: AppBar(title: Text("${widget.person.person_name} - $status"),),
       body: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
