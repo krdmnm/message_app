@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:message_app/data/database/sb_database.dart';
+import 'package:message_app/data/repository/notification.dart';
 import 'package:message_app/ui/cubits/add_person_cubit.dart';
 import 'package:message_app/ui/cubits/log_in_cubit.dart';
 import 'package:message_app/ui/cubits/main_page_cubit.dart';
@@ -16,6 +17,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final db = Database();
   await db.initialize();
+  final appNotification = AppNotification();
+  await appNotification.initialize();
   runApp(const MyApp());
 }
 

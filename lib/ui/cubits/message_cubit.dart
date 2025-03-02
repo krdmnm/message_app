@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:postgrest/postgrest.dart';
 
 import '../../data/entity/messages.dart';
+import '../../data/repository/notification.dart';
 
 class MessageCubit extends Cubit<List<Messages>>{
   MessageCubit():super(<Messages>[]){liveMessage();}
@@ -30,6 +31,9 @@ class MessageCubit extends Cubit<List<Messages>>{
         status: payload.newRecord['status']);
     var messages = state;
     emit([...messages, newMessage]);
+
+    final appNotification = AppNotification();
+    appNotification.showNotification(payload.newRecord['id'], payload.newRecord['sender_id']);
   }
 
 

@@ -33,6 +33,7 @@ dependencies:
   flutter_bloc:
   supabase_flutter:
   shared_preferences:
+  flutter_local_notifications:
   postgrest:
 
 
