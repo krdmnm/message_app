@@ -1,19 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:message_app/data/entity/app_user.dart';
 import 'package:message_app/ui/cubits/add_person_cubit.dart';
 import 'package:message_app/ui/materials/colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:message_app/data/entity/app_user.dart';
-import 'package:message_app/ui/cubits/main_page_cubit.dart';
-import 'package:message_app/ui/materials/colors.dart';
 import 'package:message_app/ui/materials/views.dart';
-import 'package:message_app/ui/views/add_person.dart';
-import 'package:message_app/ui/views/message.dart';
 import '../../data/entity/person.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../materials/views.dart';
 
 class AddPerson extends StatefulWidget {
   const AddPerson({super.key});
@@ -26,7 +17,6 @@ class _AddPersonState extends State<AddPerson> {
   var tfPersonPhone = TextEditingController();
   var tfPersonName = TextEditingController();
   bool isSearchActive = false;
-
 
 
 
@@ -61,16 +51,16 @@ class _AddPersonState extends State<AddPerson> {
         ],),
 
       body: Container(color: white,
-        child: BlocBuilder<AddPersonCubit, List<AppUser>>(
-            builder: (context, userList){
-              if(userList.isNotEmpty){
+        child: BlocBuilder<AddPersonCubit, List<Person>>(
+            builder: (context, personList){
+              if(personList.isNotEmpty){
                 return ListView.builder(
-                  itemCount: userList.length,
+                  itemCount: personList.length,
                   itemBuilder: (context, index){
-                    var user = userList[index];
+                    var person = personList[index];
                     return GestureDetector(
                       onTap: (){
-                        print("Person: ${user.user_name} - ${user.user_name} - ${user.user_email}");
+                        print("Person: ${person.person_id} - ${person.person_name} - ${person.person_email}");
                         //Navigator.push(context, MaterialPageRoute(builder: (context)=> Message(person: person)));
                       },
                       child: Card(color: lightPrimaryColor,//Person message elementi
@@ -82,16 +72,16 @@ class _AddPersonState extends State<AddPerson> {
                                 child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(user.user_name, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: primaryText),),
-                                    Text(user.user_email, style: TextStyle(fontSize: 10, fontStyle: FontStyle.italic,),),
+                                    Text(person.person_name, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: primaryText),),
+                                    Text(person.person_email, style: TextStyle(fontSize: 10, fontStyle: FontStyle.italic,),),
                                   ],
                                 ),
                               ),
                               const Spacer(),
                               IconButton(onPressed: (){
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text("${user.user_name} will be added your list. Are you sure?"),
-                                      action: SnackBarAction(label: "Yes", onPressed: (){ context.read<AddPersonCubit>().addUser(user.user_id); }),)
+                                    SnackBar(content: Text("${person.person_name} will be added your list. Are you sure?"),
+                                      action: SnackBarAction(label: "Yes", onPressed: (){ context.read<AddPersonCubit>().addUser(person.person_id); }),)
                                 );
                               }, icon: const Icon(Icons.add), color: Colors.black54,)
                             ],

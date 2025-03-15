@@ -7,12 +7,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class Database {
 
   bool isInitialized = false;
-  String url = 'https://soqxzbygwrisbxexlxwx.supabase.co';
+  String url = "https://soqxzbygwrisbxexlxwx.supabase.co";
   String anonkey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNvcXh6Ynlnd3Jpc2J4ZXhseHd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAzMTMwNDAsImV4cCI6MjA1NTg4OTA0MH0.gvocNtrmvZLgaOInnBZURiHhP0npNQsXfkBFGSwcqN8';
+  String serviceRollKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNvcXh6Ynlnd3Jpc2J4ZXhseHd4Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0MDMxMzA0MCwiZXhwIjoyMDU1ODg5MDQwfQ.uIWWHCbqXpuGM2ThCbAtcwL-iS5cQthRRLDHeMlovVE';
 
   Future<void> initialize() async {
     if(!isInitialized){
-      await Supabase.initialize(url: url, anonKey: anonkey, realtimeClientOptions: const RealtimeClientOptions(eventsPerSecond: 2));
+      //await Supabase.initialize(url: url, anonKey: anonkey, realtimeClientOptions: const RealtimeClientOptions(eventsPerSecond: 2));
+      await Supabase.initialize(url: url, anonKey: serviceRollKey, realtimeClientOptions: const RealtimeClientOptions(eventsPerSecond: 2));
       isInitialized = true;
       print("Supabase initialized");
     }
@@ -94,8 +96,12 @@ class Database {
 
 
   //dao.dart - searchUser()
-  Future<void> searchUser(String keyWord) async {
-
+  Future<List<User>> searchUser(String keyWord) async {
+    print("database searchUser executed");
+    final supabase = await getInstance();
+    final response = await supabase.auth.admin.listUsers();
+    print("database searchUser : $response");
+    return response;
   }
 
   //dao.dart - getMessages()

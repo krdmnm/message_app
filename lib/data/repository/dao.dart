@@ -74,9 +74,15 @@ class Dao {
   }
 
   //add_person_cubit searchUser
-  Future<void> searchUser(String keyWord) async {
+  Future<List<Person>> searchUser(String keyWord) async {
     final db = Database();
-    db.searchUser(keyWord);
+    final response = await db.searchUser(keyWord);
+    var personList = <Person>[];
+    for (var user in response){
+      var person = Person(person_id: user.id, person_name: user.userMetadata!['display_name'], person_email: user.email!);
+      personList.add(person);
+    }
+    return personList;
   }
 
   //add_person_cubit addUser
